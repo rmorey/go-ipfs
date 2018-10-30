@@ -125,6 +125,22 @@ func IpldPath(c cid.Cid) ResolvedPath {
 	}
 }
 
+// Simplify takes a ResolvedPath and returns a *new* ResovledPath that's as
+// short as possible. In the new resolved path, `p.Cid()` will be the same as
+// `p.Root()`.
+func Simplify(p ResolvedPath) ResolvedPath {
+	c := p.Cid()
+	if c == p.Root() {
+		return p
+	}
+	simplified := "/" + p.Namespace() + "/" + c.String()
+	remainder := p.Remainder()
+	if remainder != "" {
+		simplified += "/" + remainder
+	}
+	return NewResolvedPath(ipfspath.Path(simplified), c, c, remainder)
+}
+
 // ParsePath parses string path to a Path
 func ParsePath(p string) (Path, error) {
 	pp, err := ipfspath.ParsePath(p)

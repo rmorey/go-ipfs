@@ -135,9 +135,8 @@ Resolve the value of an IPFS DAG path:
 			return err
 		}
 
-		c := rp.Cid()
-
-		return cmds.EmitOnce(res, &ncmd.ResolvedPath{Path: path.FromCid(c)})
+		rp = coreiface.Simplify(rp)
+		return cmds.EmitOnce(res, &ncmd.ResolvedPath{Path: path.Path(rp)})
 	},
 	Encoders: cmds.EncoderMap{
 		cmds.Text: cmds.MakeEncoder(func(req *cmds.Request, w io.Writer, v interface{}) error {
